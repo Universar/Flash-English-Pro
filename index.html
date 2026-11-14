@@ -78,6 +78,11 @@
   .ico-btn:disabled{opacity:.3; cursor:default}
   .ico-btn.hablando{background:var(--acento2); color:#03150d; border-color:var(--acento)}
   .ico-btn.activo{color:var(--acento); border-color:var(--acento2); background:#0e2419}
+  .descargar-wrap{position:relative; flex:0 0 auto;}
+  .descargar-nota{
+    position:absolute; right:0; bottom:calc(100% + 4px);
+    color:#60a5fa; font-size:.68rem; white-space:nowrap;
+  }
 
   /* Panel de voz */
   .voz-wrap{position:relative; flex:0 0 auto;}
@@ -462,6 +467,10 @@
           title="Escuchar pronunciación (P)" aria-label="Escuchar pronunciación">🔊</button>
   <button class="ico-btn" id="btnBuscar" type="button" title="Buscar palabra (Ctrl+K)">🔍</button>
   <button class="ico-btn" id="reset" type="button" title="Reiniciar progreso">↺</button>
+  <div class="descargar-wrap">
+    <span class="descargar-nota">descarga para uso sin internet</span>
+    <button class="ico-btn" id="descargarHtml" type="button" title="Descargar este HTML" aria-label="Descargar este HTML">⬇</button>
+  </div>
 </header>
 
 <main class="escena">
@@ -71247,6 +71256,7 @@
   var btnGirar     = document.getElementById("girar");
   var btnReset     = document.getElementById("reset");
   var btnBuscar    = document.getElementById("btnBuscar");
+  var btnDescargar = document.getElementById("descargarHtml");
   var audioBotones = [document.getElementById("audioBtnHeader"),
                       document.getElementById("audioBtnFront")];
   var formIr       = document.getElementById("irForm");
@@ -71695,6 +71705,16 @@
   function estaAbierto() { return buscador.classList.contains("abierto"); }
 
   btnBuscar.addEventListener("click", abrirBuscador);
+  btnDescargar.addEventListener("click", function () {
+    var html = "<!doctype html>\n" + document.documentElement.outerHTML;
+    var archivo = new Blob([html], { type: "text/html;charset=utf-8" });
+    var url = URL.createObjectURL(archivo);
+    var enlace = document.createElement("a");
+    enlace.href = url;
+    enlace.download = "flashcards.html";
+    enlace.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
   buscador.addEventListener("click", function (e) {
     if (e.target === buscador) cerrarBuscador();
   });
